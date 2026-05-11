@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlightWall</title>
+  <link rel="preload" href="./fonts/VT323-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0A0800;
+    }
+
+    #app {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      /* Scale to fit any screen while preserving aspect ratio */
+      transform-origin: top left;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    /* Layer order */
+    #canvas-main     { z-index: 1; }
+    #canvas-glow     { z-index: 2; filter: blur(5px); mix-blend-mode: screen; pointer-events: none; }
+    #canvas-scanline { z-index: 3; mix-blend-mode: multiply; pointer-events: none; }
+
+    @font-face {
+      font-family: 'VT323';
+      src: url('./fonts/VT323-Regular.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <canvas id="canvas-main"></canvas>
+    <canvas id="canvas-glow"></canvas>
+    <canvas id="canvas-scanline"></canvas>
+  </div>
+
+  <script>
+    // Scale #app to fill the viewport while preserving 1920×1080
+    function scale() {
+      const app   = document.getElementById('app');
+      const scaleX = window.innerWidth  / 1920;
+      const scaleY = window.innerHeight / 1080;
+      const s      = Math.min(scaleX, scaleY);
+      const offsetX = (window.innerWidth  - 1920 * s) / 2;
+      const offsetY = (window.innerHeight - 1080 * s) / 2;
+      app.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${s})`;
+    }
+    scale();
+    window.addEventListener('resize', scale);
+  </script>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>
